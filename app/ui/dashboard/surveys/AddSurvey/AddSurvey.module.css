@@ -1,0 +1,70 @@
+/* AddSurvey.module.css */
+.container {
+  background-color: var(--bgSoft);
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column; /* Updated to ensure form elements stack vertically */
+  gap: 20px; /* Provides consistent spacing between form elements */
+}
+
+.input,
+.textarea,
+.select,
+.button,
+.submitButton {
+  padding: 15px; /* Adjusted for better form usability */
+  background-color: var(--bg);
+  color: var(--text);
+  border: 2px solid #2e374a;
+  border-radius: 5px;
+  margin-bottom: 20px; /* Adjusted for consistency */
+}
+
+.input,
+.select {
+  width: calc(50% - 10px); /* Adjusted to account for border */
+}
+
+.textarea {
+  width: 100%;
+  height: 150px; /* Set a fixed height for textarea */
+}
+
+.button,
+.submitButton {
+  width: auto; /* Allows button to fit its content */
+  padding: 10px 20px; /* Adjusted padding for better button usability */
+  background-color: teal;
+  color: white; /* Ensure text color contrasts well with button background */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: flex-start; /* Align buttons to the start of the form */
+}
+
+.submitButton {
+  width: 100%; /* Full width for the submit button */
+}
+
+.questionContainer {
+  width: 100%; /* Ensure question containers span full width */
+  display: flex;
+  flex-direction: column;
+}
+
+.optionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Space out each option input */
+}
+
+/* Additional styles for dynamic option addition */
+.addOptionButton {
+  margin-top: 10px;
+  align-self: flex-end; /* Align 'Add Option' button to the right */
+}

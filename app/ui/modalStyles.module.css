@@ -1,0 +1,57 @@
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContent {
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modalTitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.modalDescription {
+  margin-bottom: 20px;
+}
+
+.questionContainer {
+  margin-top: 20px;
+}
+
+.question {
+  margin-bottom: 20px;
+}
+
+.questionText {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.optionList {
+  list-style-type: none;
+  padding: 0;
+}
+
+.optionItem {
+  margin-bottom: 5px;
+}
+
+.optionText {
+  font-size: 16px;
+}
+
+.selectedOption {
+  color: green;
+  font-weight: bold;
+  margin-left: 5px;
+}
