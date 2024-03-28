@@ -1,12 +1,6 @@
 import { Parser } from "json2csv";
 import db from "../../lib/firebase";
-import {
-  getFirestore,
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 export async function POST(request) {
   const { deviceId, startDate, endDate, status } = await request.json();
