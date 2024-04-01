@@ -1,6 +1,8 @@
 import { Product, User } from "./models";
 import { connectToDB } from "./utils";
 
+import db from "../lib/firebase";
+
 export const fetchUsers = async (q, page) => {
   const regex = new RegExp(q, "i");
 
@@ -63,23 +65,23 @@ export const fetchProduct = async (id) => {
 
 // DUMMY DATA
 
-export const cards = [
-  {
-    id: 1,
-    title: "Total Users",
-    number: 10.928,
-    change: 12,
-  },
-  {
-    id: 2,
-    title: "Stock",
-    number: 8.236,
-    change: -2,
-  },
-  {
-    id: 3,
-    title: "Revenue",
-    number: 6.642,
-    change: 18,
-  },
-];
+// export const cards = [
+//   {
+//     id: 1,
+//     title: "Total Surveys",
+//     number: 10.928,
+//     change: 12,
+//   },
+//   {
+//     id: 2,
+//     title: "Completed Surveys",
+//     number: 8.236,
+//     change: -2,
+//   },
+//   {
+//     id: 3,
+//     title: "Unique by Device",
+//     number: 6.642,
+//     change: 18,
+//   },
+// ];

@@ -12,6 +12,7 @@ import {
   MdOutlineSettings,
   MdHelpCenter,
   MdLogout,
+  MdImportExport,
 } from "react-icons/md";
 import { auth, signOut } from "@/app/auth";
 
@@ -37,7 +38,7 @@ const menuItems = [
       {
         title: "Responses",
         path: "/dashboard/responses",
-        icon: <MdAttachMoney />,
+        icon: <MdImportExport />,
       },
     ],
   },
@@ -45,19 +46,9 @@ const menuItems = [
     title: "Analytics",
     list: [
       {
-        title: "Revenue",
-        path: "/dashboard/revenue",
-        icon: <MdWork />,
-      },
-      {
         title: "Reports",
         path: "/dashboard/reports",
         icon: <MdAnalytics />,
-      },
-      {
-        title: "Teams",
-        path: "/dashboard/teams",
-        icon: <MdPeople />,
       },
     ],
   },

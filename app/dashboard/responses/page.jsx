@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "@/app/ui/dashboard/products/products.module.css";
-import db from "../../lib/firebase";
+import db from "@/app/lib/firebase";
 import { collection, getDocs, query } from "firebase/firestore";
 import {
   Paper,
