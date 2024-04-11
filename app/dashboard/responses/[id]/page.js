@@ -36,6 +36,8 @@ import {
   doc,
   getDoc,
 } from "firebase/firestore";
+import { sendPushNotification } from "@/app/lib/sendPushNotification";
+import { Bounce, toast } from "react-toastify";
 
 // Modal style
 const modalStyle = {
@@ -102,11 +104,53 @@ const DeviceSurveysPage = () => {
   };
 
   const handleClose = () => setOpen(false);
-  const handleSendNotification = (surveyId) => {
-    // Placeholder function to simulate sending a notification
-    console.log(`Sending notification for surveyId: ${surveyId}`);
-    // Implement the actual notification logic here
-    alert(`Notification sent for survey ${surveyId}`);
+  const handleSendNotification = async (deviceUUID, surveyId) => {
+    console.log(deviceUUID, surveyId);
+    try {
+      // Call the API route to send the notification
+      const response = await fetch("/api/sendnotification/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          deviceUUID,
+          surveyId,
+        }),
+      });
+
+      // Handle the response
+      if (response.ok) {
+        toast.success("Notification sent successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+      } else {
+        console.error("Failed to send notification");
+        toast.error("Failed to send notification", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+        alert("Failed to send notification");
+      }
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      alert("Error sending notification");
+    }
   };
   const handleStatusChange = () => {};
 
@@ -279,7 +323,7 @@ const DeviceSurveysPage = () => {
                         variant="contained"
                         color="secondary"
                         onClick={() =>
-                          handleSendNotification(response.surveyId)
+                          handleSendNotification(deviceId, response.surveyId)
                         }
                       >
                         Notify User
@@ -333,7 +377,7 @@ const DeviceSurveysPage = () => {
                   {question.options.map((option, optionIndex) => (
                     <li key={optionIndex} className={modalStyles.optionItem}>
                       <span className={modalStyles.optionText}>{option}</span>
-                      {currentSurveyDetails.answers.some((answer) =>
+                      {currentSurveyDetails?.answers?.some((answer) =>
                         answer.selectedOptions.includes(option)
                       ) && (
                         <span className={modalStyles.selectedOption}>

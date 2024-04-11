@@ -15,6 +15,7 @@
     "@next/eslint-plugin-next": "14.0.1",
     "appwrite": "^14.0.0",
     "bcrypt": "5.1.1",
+    "expo-server-sdk": "^3.9.0",
     "firebase": "^10.8.1",
     "json2csv": "^6.0.0-alpha.2",
     "mongoose": "8.0.0",
@@ -24,6 +25,7 @@
     "react": "18",
     "react-dom": "18",
     "react-icons": "4.11.0",
+    "react-toastify": "^10.0.5",
     "recharts": "2.9.0",
     "use-debounce": "9.0.4",
     "uuid": "^9.0.1"

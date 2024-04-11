@@ -70,8 +70,6 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  console.log(cards);
-
   return (
     <div className={styles.wrapper}>
       <div className={styles.main}>
