@@ -356,14 +356,16 @@ const DeviceSurveysPage = () => {
             component="h2"
             className={modalStyles.modalTitle}
           >
-            {currentSurveyDetails?.title}
+            Title : {currentSurveyDetails?.title}
           </Typography>
+          <hr />
           <Typography
             id="modal-modal-description"
             className={modalStyles.modalDescription}
           >
-            {currentSurveyDetails?.description}
+            Description : {currentSurveyDetails?.description}
           </Typography>
+          <hr />
           <div className={modalStyles.questionContainer}>
             {currentSurveyDetails?.questions.map((question, index) => (
               <div key={index} className={modalStyles.question}>

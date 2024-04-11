@@ -3,7 +3,15 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "@/app/ui/dashboard/products/products.module.css";
 import db from "@/app/lib/firebase"; // Ensure this path points to your Firebase config file
-import { collection, getDocs, onSnapshot, query } from "firebase/firestore";
+import {
+  collection,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  doc,
+  query,
+} from "firebase/firestore";
+import modalStyles from "@/app/ui/modalStyles.module.css";
 import {
   Modal,
   Box,
@@ -29,7 +37,9 @@ import {
 
 const SurveyPage = () => {
   const [surveys, setSurveys] = useState([]);
+  const [currentSurveyDetails, setCurrentSurveyDetails] = useState(null);
 
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     // Subscribe to real-time updates
     const unsubscribe = onSnapshot(
@@ -47,6 +57,23 @@ const SurveyPage = () => {
     // Cleanup function to unsubscribe from the listener when the component unmounts
     return () => unsubscribe();
   }, []);
+  const handleClose = () => setOpen(false);
+
+  const handleOpen = async (surveyResponse) => {
+    console.log(surveyResponse);
+    const surveyRef = doc(db, "Surveys", surveyResponse);
+    const surveySnap = await getDoc(surveyRef);
+
+    if (surveySnap.exists()) {
+      setCurrentSurveyDetails({
+        id: surveySnap.id,
+        ...surveySnap.data(),
+      });
+      setOpen(true);
+    } else {
+      console.error("Survey details not found");
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -109,8 +136,7 @@ const SurveyPage = () => {
                     <Button
                       variant="contained"
                       color="primary"
-                      component={Link}
-                      href={`/dashboard/surveys/${survey.id}`}
+                      onClick={() => handleOpen(survey.id)}
                       sx={{ mr: 1 }}
                     >
                       View
@@ -140,6 +166,64 @@ const SurveyPage = () => {
           </Table>
         </TableContainer>
       </Paper>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        className={modalStyles.modal}
+      >
+        <Box
+          className={modalStyles.modalContent}
+          sx={{
+            bgcolor: "#182237",
+            color: "white",
+          }}
+        >
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+            className={modalStyles.modalTitle}
+          >
+            Title : {currentSurveyDetails?.title}
+          </Typography>
+          <hr />
+          <Typography
+            id="modal-modal-description"
+            className={modalStyles.modalDescription}
+          >
+            Description : {currentSurveyDetails?.description}
+          </Typography>
+          <hr />
+          <div className={modalStyles.questionContainer}>
+            {currentSurveyDetails?.questions.map((question, index) => (
+              <div key={index} className={modalStyles.question}>
+                <Typography
+                  variant="subtitle1"
+                  className={modalStyles.questionText}
+                >
+                  {question.question}
+                </Typography>
+                <ul className={modalStyles.optionList}>
+                  {question.options.map((option, optionIndex) => (
+                    <li key={optionIndex} className={modalStyles.optionItem}>
+                      <span className={modalStyles.optionText}>{option}</span>
+                      {currentSurveyDetails?.answers?.some((answer) =>
+                        answer.selectedOptions.includes(option)
+                      ) && (
+                        <span className={modalStyles.selectedOption}>
+                          (Selected)
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </Box>
+      </Modal>
     </div>
   );
 };
