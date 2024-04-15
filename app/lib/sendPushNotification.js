@@ -1,7 +1,7 @@
 // Import the necessary functions from Firebase
 
 export const sendPushNotification = async (message) => {
-  const url = "https://exp.host/--/api/v2/push/send";
+  const url = "https://exp.host/--/api/v2/push/send?useFcmV1=true";
   const headers = {
     "Content-Type": "application/json",
     accept: "application/json",
