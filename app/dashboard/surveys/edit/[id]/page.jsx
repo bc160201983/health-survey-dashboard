@@ -134,6 +134,17 @@ const EditSurveyPage = ({ params }) => {
       await updateDoc(surveyRef, surveyData);
       console.log("Survey updated successfully");
       router.push("/dashboard/surveys");
+      toast.success("Survey and questions Updated successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
     } catch (error) {
       console.error("Error updating survey: ", error);
     }

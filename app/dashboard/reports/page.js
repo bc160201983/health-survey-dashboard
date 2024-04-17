@@ -36,6 +36,7 @@ import {
   doc,
   getDoc,
 } from "firebase/firestore";
+import { Bounce, toast } from "react-toastify";
 
 // Modal style
 const modalStyle = {
@@ -117,13 +118,12 @@ const DeviceSurveysPage = () => {
 
   const handleDownloadCSV = async () => {
     try {
-      const response = await fetch("/api/downloadSurveyResponses/", {
+      const response = await fetch("/api/genratereport/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          deviceId,
           startDate: selectedStartDate,
           endDate: selectedEndDate,
           status: selectedStatus,
@@ -135,11 +135,33 @@ const DeviceSurveysPage = () => {
         const url = window.URL.createObjectURL(new Blob([blob]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", `survey_responses_${deviceId}.csv`);
+        link.setAttribute("download", `survey_report.csv`);
         document.body.appendChild(link);
         link.click();
         link.parentNode.removeChild(link);
+        toast.success("CSV file downloaded successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
       } else {
+        toast.error("Error downloading CSV file", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
         console.error("Error downloading CSV");
       }
     } catch (error) {

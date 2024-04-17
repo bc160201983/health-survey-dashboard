@@ -162,7 +162,7 @@ const DeviceSurveysPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          deviceId,
+          deviceUUID: deviceId,
           startDate: selectedStartDate,
           endDate: selectedEndDate,
           status: selectedStatus,
@@ -178,7 +178,29 @@ const DeviceSurveysPage = () => {
         document.body.appendChild(link);
         link.click();
         link.parentNode.removeChild(link);
+        toast.success("CSV file downloaded successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
       } else {
+        toast.error("Error downloading CSV file", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
         console.error("Error downloading CSV");
       }
     } catch (error) {

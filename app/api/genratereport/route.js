@@ -4,23 +4,17 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 
 export async function POST(request) {
   try {
-    const { deviceUUID, startDate, endDate, status } = await request.json();
+    const { startDate, endDate, status } = await request.json();
 
     console.log("Received request:", {
-      deviceUUID,
       startDate,
       endDate,
       status,
     });
 
-    // Ensure deviceUUID is defined
-    if (!deviceUUID) {
-      throw new Error("Device UUID is required.");
-    }
-
     // Build the base query for survey responses
     const surveyResponsesRef = collection(db, "SurveyResponses");
-    let queryConstraints = [where("deviceUUID", "==", deviceUUID)];
+    let queryConstraints = [];
 
     // Add optional query constraints if provided
     if (startDate && endDate) {
@@ -59,7 +53,6 @@ export async function POST(request) {
     const csvData = surveyResponses.map((response) => {
       const rowData = {
         surveyId: response.surveyId,
-        deviceUUID: response.deviceUUID,
         timestamp: response.timestamp ? response.timestamp.toDate() : "",
         status: response.status || "",
       };
@@ -89,13 +82,7 @@ export async function POST(request) {
     );
 
     // Define fields for CSV
-    const fields = [
-      "surveyId",
-      "deviceUUID",
-      "timestamp",
-      "status",
-      ...uniqueQuestions,
-    ];
+    const fields = ["surveyId", "timestamp", "status", ...uniqueQuestions];
     const opts = { fields };
 
     // Generate CSV

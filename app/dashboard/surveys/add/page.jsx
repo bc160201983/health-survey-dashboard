@@ -1,11 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "@/app/ui/dashboard/surveys/AddSurvey/AddSurvey.module.css";
 import { v4 as uuidv4 } from "uuid";
 
 import { useRouter } from "next/navigation";
 import { addDoc, collection, doc, writeBatch } from "firebase/firestore";
 import db from "@/app/lib/firebase";
+import { sendPushNotificationToAllUser } from "@/app/lib/sendPushNotification";
+import { Bounce, toast } from "react-toastify";
 
 const AddSurveyPage = () => {
   const [survey, setSurvey] = useState({
@@ -113,17 +115,61 @@ const AddSurveyPage = () => {
     try {
       const batch = writeBatch(db);
       const surveyRef = await addDoc(collection(db, "Surveys"), surveyData);
-
+      const surveyId = surveyRef.id;
+      console.log("New Survey ID:", surveyId);
       await batch.commit();
-      console.log("Survey and questions saved successfully");
+      await handleNotification(surveyId);
       router.push("/dashboard/surveys");
+      toast.success("Survey and questions saved successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      console.log("Survey and questions saved successfully");
     } catch (error) {
       console.error("Error saving survey: ", error);
     }
   };
 
+  const handleNotification = async (surveyId) => {
+    try {
+      const response = await fetch("/api/sendnotificationalluser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ surveyId }),
+      });
+
+      const data = await response.json();
+      toast.success("Notification sent successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      console.log("Notification sent:", data);
+    } catch (error) {
+      console.error("Error sending notification:", error);
+    }
+  };
+
   return (
     <div className={styles.container}>
+      {/* <button onClick={() => handleNotification()} className={styles.button}>
+        Send Notifications
+      </button> */}
       <form onSubmit={handleSubmit} className={styles.form}>
         <input
           type="text"

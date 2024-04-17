@@ -10,6 +10,7 @@ import {
   onSnapshot,
   doc,
   query,
+  deleteDoc,
 } from "firebase/firestore";
 import modalStyles from "@/app/ui/modalStyles.module.css";
 import {
@@ -34,6 +35,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { Bounce, toast } from "react-toastify";
 
 const SurveyPage = () => {
   const [surveys, setSurveys] = useState([]);
@@ -72,6 +74,28 @@ const SurveyPage = () => {
       setOpen(true);
     } else {
       console.error("Survey details not found");
+    }
+  };
+  const handleDelete = async (surveyId) => {
+    try {
+      await deleteDoc(doc(db, "Surveys", surveyId));
+      await deleteDoc(doc(db, "SurveyResponses", surveyId));
+      toast.success("Survey and questions Deleted successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      setSurveys((prevSurveys) =>
+        prevSurveys.filter((survey) => survey.id !== surveyId)
+      );
+    } catch (error) {
+      console.error("Error deleting survey:", error);
     }
   };
 
@@ -153,8 +177,8 @@ const SurveyPage = () => {
                     <Button
                       variant="contained"
                       color="error"
-                      component={Link}
-                      href={`/dashboard/surveys/${survey.id}`}
+                      component={Button}
+                      onClick={() => handleDelete(survey.id)}
                       sx={{ mr: 1 }}
                     >
                       Delete
