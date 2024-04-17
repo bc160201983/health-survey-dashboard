@@ -133,3 +133,28 @@ export async function updateNotificationToken(tokenId, notification) {
     throw error;
   }
 }
+
+// Function to delete notifications associated with a survey
+export async function deleteSurveyNotifications(surveyId) {
+  console.log(surveyId);
+  try {
+    // Query the notificationToken collection for notifications with the given surveyId
+    const notificationsRef = collection(db, "notificationToken");
+    const querySnapshot = await getDocs(
+      query(notificationsRef, where("surveyId", "==", surveyId))
+    );
+
+    // Iterate over the query snapshot and delete each notification document
+    const deletionPromises = querySnapshot.docs.map(async (doc) => {
+      await deleteDoc(doc.ref);
+    });
+
+    // Wait for all deletion operations to complete
+    await Promise.all(deletionPromises);
+
+    console.log("Deleted notifications associated with survey:", surveyId);
+  } catch (error) {
+    console.error("Error deleting survey notifications:", error);
+    throw error;
+  }
+}

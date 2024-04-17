@@ -11,6 +11,8 @@ import {
   doc,
   query,
   deleteDoc,
+  where,
+  updateDoc,
 } from "firebase/firestore";
 import modalStyles from "@/app/ui/modalStyles.module.css";
 import {
@@ -36,6 +38,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Bounce, toast } from "react-toastify";
+import { deleteSurveyNotifications } from "@/app/lib/sendPushNotification";
 
 const SurveyPage = () => {
   const [surveys, setSurveys] = useState([]);
@@ -79,8 +82,55 @@ const SurveyPage = () => {
   const handleDelete = async (surveyId) => {
     try {
       await deleteDoc(doc(db, "Surveys", surveyId));
-      await deleteDoc(doc(db, "SurveyResponses", surveyId));
-      toast.success("Survey and questions Deleted successfully", {
+      const responseQuerySnapshot = await getDocs(
+        query(
+          collection(db, "SurveyResponses"),
+          where("surveyId", "==", surveyId)
+        )
+      );
+
+      const responseDeletionPromises = responseQuerySnapshot.docs.map(
+        async (doc) => {
+          try {
+            await deleteDoc(doc.ref);
+            console.log("Survey response deleted successfully");
+          } catch (error) {
+            console.error("Error deleting survey response:", error);
+          }
+        }
+      );
+
+      // Fetch documents from NotificationTokens collection
+      const notificationQuerySnapshot = await getDocs(
+        collection(db, "notificationToken")
+      );
+
+      const notificationDeletionPromises = notificationQuerySnapshot.docs.map(
+        async (doc) => {
+          // Get the array of notifications from the document data
+          const notifications = doc.data().notifications;
+
+          // Filter out notifications with matching surveyId
+          const filteredNotifications = notifications.filter(
+            (notification) => notification.surveyId !== surveyId
+          );
+          console.log(filteredNotifications);
+          try {
+            // Update the document with the filtered notifications
+            await updateDoc(doc.ref, { notifications: filteredNotifications });
+            console.log("Notifications deleted successfully");
+          } catch (error) {
+            console.error("Error deleting notifications:", error);
+          }
+        }
+      );
+
+      await Promise.all([
+        ...responseDeletionPromises,
+        ...notificationDeletionPromises,
+      ]);
+
+      toast.success("Survey and associated data deleted successfully", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -91,11 +141,8 @@ const SurveyPage = () => {
         theme: "dark",
         transition: Bounce,
       });
-      setSurveys((prevSurveys) =>
-        prevSurveys.filter((survey) => survey.id !== surveyId)
-      );
     } catch (error) {
-      console.error("Error deleting survey:", error);
+      console.error("Error deleting survey and associated data:", error);
     }
   };
 

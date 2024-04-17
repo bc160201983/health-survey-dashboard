@@ -1,102 +1,63 @@
 import Image from "next/image";
 import styles from "./transactions.module.css";
+import { useEffect, useState } from "react";
+import { collection, getDocs, query } from "firebase/firestore";
+import db from "@/app/lib/firebase";
+import Link from "next/link";
 
 const Transactions = () => {
+  const [surveyResponses, setSurveyResponses] = useState([]);
+  useEffect(() => {
+    const fetchSurveyResponses = async () => {
+      const responsesQuery = query(collection(db, "SurveyResponses"));
+      const responsesSnapshot = await getDocs(responsesQuery);
+      const responsesData = responsesSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setSurveyResponses(responsesData);
+    };
+
+    fetchSurveyResponses();
+  }, []);
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Latest Transactions</h2>
+      <h2 className={styles.title}>Latest Survey Reponses</h2>
       <table className={styles.table}>
         <thead>
           <tr>
-            <td>Name</td>
+            <td>Devce ID</td>
             <td>Status</td>
             <td>Date</td>
-            <td>Amount</td>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <div className={styles.user}>
-                <Image
-                  src="/noavatar.png"
-                  alt=""
-                  width={40}
-                  height={40}
-                  className={styles.userImage}
-                />
-                John Doe
-              </div>
-            </td>
-            <td>
-              <span className={`${styles.status} ${styles.pending}`}>
-                Pending
-              </span>
-            </td>
-            <td>14.02.2024</td>
-            <td>$3.200</td>
-          </tr>
-          <tr>
-            <td>
-              <div className={styles.user}>
-                <Image
-                  src="/noavatar.png"
-                  alt=""
-                  width={40}
-                  height={40}
-                  className={styles.userImage}
-                />
-                John Doe
-              </div>
-            </td>
-            <td>
-              <span className={`${styles.status} ${styles.done}`}>Done</span>
-            </td>
-            <td>14.02.2024</td>
-            <td>$3.200</td>
-          </tr>
-          <tr>
-            <td>
-              <div className={styles.user}>
-                <Image
-                  src="/noavatar.png"
-                  alt=""
-                  width={40}
-                  height={40}
-                  className={styles.userImage}
-                />
-                John Doe
-              </div>
-            </td>
-            <td>
-              <span className={`${styles.status} ${styles.cancelled}`}>
-                Cancelled
-              </span>
-            </td>
-            <td>14.02.2024</td>
-            <td>$3.200</td>
-          </tr>
-          <tr>
-            <td>
-              <div className={styles.user}>
-                <Image
-                  src="/noavatar.png"
-                  alt=""
-                  width={40}
-                  height={40}
-                  className={styles.userImage}
-                />
-                John Doe
-              </div>
-            </td>
-            <td>
-              <span className={`${styles.status} ${styles.pending}`}>
-                Pending
-              </span>
-            </td>
-            <td>14.02.2024</td>
-            <td>$3.200</td>
-          </tr>
+          {surveyResponses.map((response) => {
+            return (
+              <tr>
+                <td>
+                  <div className={styles.user}>
+                    <Image
+                      src="/noavatar.png"
+                      alt=""
+                      width={40}
+                      height={40}
+                      className={styles.userImage}
+                    />
+                    <Link href={`/dashboard/responses/${response.deviceUUID}`}>
+                      {response.deviceUUID}
+                    </Link>
+                  </div>
+                </td>
+                <td>
+                  <span className={`${styles.status} ${styles.pending}`}>
+                    {response.status}
+                  </span>
+                </td>
+                <td>{response.startTime?.toDate().toDateString()}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
