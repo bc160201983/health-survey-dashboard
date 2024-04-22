@@ -32,9 +32,9 @@ const Transactions = () => {
           </tr>
         </thead>
         <tbody>
-          {surveyResponses.map((response) => {
+          {surveyResponses.map((response, index) => {
             return (
-              <tr>
+              <tr key={index}>
                 <td>
                   <div className={styles.user}>
                     <Image

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+
 import Link from "next/link";
 import styles from "@/app/ui/dashboard/products/products.module.css";
 import db from "@/app/lib/firebase"; // Ensure this path points to your Firebase config file
@@ -36,6 +37,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  TablePagination,
 } from "@mui/material";
 import { Bounce, toast } from "react-toastify";
 import { deleteSurveyNotifications } from "@/app/lib/sendPushNotification";
@@ -43,8 +45,10 @@ import { deleteSurveyNotifications } from "@/app/lib/sendPushNotification";
 const SurveyPage = () => {
   const [surveys, setSurveys] = useState([]);
   const [currentSurveyDetails, setCurrentSurveyDetails] = useState(null);
-
   const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(0); // State for current page
+  const [rowsPerPage, setRowsPerPage] = useState(5); // State for rows per page
+
   useEffect(() => {
     // Subscribe to real-time updates
     const unsubscribe = onSnapshot(
@@ -145,6 +149,36 @@ const SurveyPage = () => {
       console.error("Error deleting survey and associated data:", error);
     }
   };
+  useEffect(() => {
+    // Subscribe to real-time updates
+    const unsubscribe = onSnapshot(
+      collection(db, "Surveys"),
+      (querySnapshot) => {
+        const surveysArray = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate().toDateString(),
+        }));
+        setSurveys(surveysArray);
+      }
+    );
+
+    // Cleanup function to unsubscribe from the listener when the component unmounts
+    return () => unsubscribe();
+  }, []);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  // Pagination logic to display correct surveys based on current page and rows per page
+  const startIndex = page * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const displayedSurveys = surveys.slice(startIndex, endIndex);
 
   return (
     <div className={styles.container}>
@@ -164,7 +198,7 @@ const SurveyPage = () => {
             marginBottom: 2,
             bgcolor: "#182237",
             color: "white",
-            padding: 2,
+            padding: 1,
           }}
         >
           <Typography variant="h6">Surveys</Typography>
@@ -191,7 +225,7 @@ const SurveyPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {surveys.map((survey) => (
+              {displayedSurveys.map((survey) => (
                 <TableRow
                   key={survey.id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -236,7 +270,18 @@ const SurveyPage = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={surveys.length} // Total number of surveys
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          sx={{ color: "white" }}
+        />
       </Paper>
+
       <Modal
         open={open}
         onClose={handleClose}

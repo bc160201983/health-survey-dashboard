@@ -30,7 +30,7 @@ const Dashboard = () => {
       const completedSurveys = completedSurveysSnapshot.size;
 
       // Fetch unique devices count
-      const devicesQuery = query(collection(db, "Devices")); // Assuming you have a "Devices" collection
+      const devicesQuery = query(collection(db, "notificationToken")); // Assuming you have a "Devices" collection
       const devicesSnapshot = await getDocs(devicesQuery);
       const uniqueDevices = devicesSnapshot.size;
 
@@ -47,7 +47,7 @@ const Dashboard = () => {
       });
       cards.push({
         id: 3,
-        title: "Unique by Device",
+        title: "Unique Device",
         number: uniqueDevices,
       });
 

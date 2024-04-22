@@ -25,6 +25,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  TablePagination,
 } from "@mui/material";
 import Link from "next/link";
 import db from "../../../lib/firebase";
@@ -60,6 +61,8 @@ const DeviceSurveysPage = () => {
   const [selectedEndDate, setSelectedEndDate] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [surveyResponses, setSurveyResponses] = useState([]);
+  const [page, setPage] = useState(0); // State for current page
+  const [rowsPerPage, setRowsPerPage] = useState(5); // State for rows per page
   // Your existing state and useEffect logic here
   const [open, setOpen] = useState(false);
   const [currentSurveyDetails, setCurrentSurveyDetails] = useState(null);
@@ -207,6 +210,18 @@ const DeviceSurveysPage = () => {
       console.error("Error downloading CSV:", error);
     }
   };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  // Pagination logic to display correct surveys based on current page and rows per page
+  const startIndex = page * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const displayedSurveys = surveyResponses.slice(startIndex, endIndex);
   return (
     <>
       <Paper
@@ -357,6 +372,16 @@ const DeviceSurveysPage = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={surveyResponses.length} // Total number of surveys
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          sx={{ color: "white" }}
+        />
       </Paper>
       <Modal
         open={open}

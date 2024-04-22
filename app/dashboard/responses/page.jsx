@@ -12,12 +12,15 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 const DevicesPage = () => {
   const [deviceData, setDeviceData] = useState([]);
+  const [page, setPage] = useState(0); // State for current page
+  const [rowsPerPage, setRowsPerPage] = useState(5); // State for rows per page
   const router = useRouter();
 
   useEffect(() => {
@@ -48,6 +51,19 @@ const DevicesPage = () => {
 
     fetchDevices();
   }, []);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  // Pagination logic to display correct surveys based on current page and rows per page
+  const startIndex = page * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const displayedSurveys = deviceData.slice(startIndex, endIndex);
 
   return (
     <Paper
@@ -103,6 +119,16 @@ const DevicesPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={deviceData.length} // Total number of surveys
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        sx={{ color: "white" }}
+      />
     </Paper>
   );
 };
