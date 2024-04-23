@@ -3,13 +3,13 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBCbarwY5FQZ0hY0iufyULVMjKMzZoRNj0",
-  authDomain: "health-app-react.firebaseapp.com",
-  projectId: "health-app-react",
-  storageBucket: "health-app-react.appspot.com",
-  messagingSenderId: "912573667215",
-  appId: "1:912573667215:web:3012fd42a8ec64c7e31dfa",
-  measurementId: "G-7LM1B2RCS7",
+  apiKey: process.env.APIKEY,
+  authDomain: process.env.AUTHDOMAIN,
+  projectId: process.env.PROJECTID,
+  storageBucket: process.env.STORAGEBUCKET,
+  messagingSenderId: process.env.MESSAGESENDERID,
+  appId: process.env.APPID,
+  measurementId: process.env.MEASUREMENTID,
 };
 
 // Initialize Firebase
