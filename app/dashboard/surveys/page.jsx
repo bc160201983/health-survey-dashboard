@@ -14,6 +14,7 @@ import {
   deleteDoc,
   where,
   updateDoc,
+  orderBy,
 } from "firebase/firestore";
 import modalStyles from "@/app/ui/modalStyles.module.css";
 import {
@@ -52,7 +53,7 @@ const SurveyPage = () => {
   useEffect(() => {
     // Subscribe to real-time updates
     const unsubscribe = onSnapshot(
-      collection(db, "Surveys"),
+      query(collection(db, "Surveys"), orderBy("createdAt", "desc")),
       (querySnapshot) => {
         const surveysArray = querySnapshot.docs.map((doc) => ({
           id: doc.id,
