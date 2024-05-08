@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import Link from "next/link";
 import styles from "@/app/ui/dashboard/products/products.module.css";
-import db from "@/app/lib/firebase"; // Ensure this path points to your Firebase config file
+import { db } from "@/app/lib/firebase"; // Ensure this path points to your Firebase config file
 import {
   collection,
   getDoc,

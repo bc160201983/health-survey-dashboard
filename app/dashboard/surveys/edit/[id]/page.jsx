@@ -12,7 +12,7 @@ import {
   updateDoc,
   writeBatch,
 } from "firebase/firestore";
-import db from "@/app/lib/firebase";
+import { db } from "@/app/lib/firebase";
 
 const EditSurveyPage = ({ params }) => {
   const { id } = params;

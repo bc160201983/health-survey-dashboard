@@ -28,7 +28,7 @@ import {
   TablePagination,
 } from "@mui/material";
 import Link from "next/link";
-import db from "@/app/lib/firebase";
+import { db } from "@/app/lib/firebase";
 import {
   collection,
   getDocs,

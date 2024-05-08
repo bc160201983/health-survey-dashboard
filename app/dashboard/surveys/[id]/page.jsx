@@ -1,5 +1,3 @@
-import { updateProduct } from "@/app/lib/actions";
-import { fetchProduct } from "@/app/lib/data";
 import styles from "@/app/ui/dashboard/products/singleProduct/singleProduct.module.css";
 import Image from "next/image";
 

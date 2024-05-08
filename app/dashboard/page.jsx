@@ -7,10 +7,14 @@ import styles from "../ui/dashboard/dashboard.module.css";
 import Rightbar from "../ui/dashboard/rightbar/rightbar";
 import Transactions from "../ui/dashboard/transactions/transactions";
 import { collection, query, getDocs, where } from "firebase/firestore";
-import db from "../lib/firebase";
+import { db, fAuth } from "../lib/firebase";
+import { useSession } from "next-auth/react";
+import { redirect, useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
 
 const Dashboard = () => {
   const [cards, setCards] = useState([]);
+  const router = useRouter();
 
   const fetchCardsData = async () => {
     const cards = []; // Initialize an empty array to store the fetched data
@@ -79,11 +83,11 @@ const Dashboard = () => {
           ))}
         </div>
         <Transactions />
-        <Chart />
+        {/* <Chart /> */}
       </div>
-      <div className={styles.side}>
+      {/* <div className={styles.side}>
         <Rightbar />
-      </div>
+      </div> */}
     </div>
   );
 };

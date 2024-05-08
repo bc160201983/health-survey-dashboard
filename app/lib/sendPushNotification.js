@@ -10,7 +10,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import db from "./firebase";
+import { db } from "./firebase";
 
 export const sendPushNotification = async (message) => {
   const url = "https://exp.host/--/api/v2/push/send?useFcmV1=true";

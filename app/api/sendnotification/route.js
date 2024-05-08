@@ -1,4 +1,4 @@
-import db from "@/app/lib/firebase";
+import { db } from "@/app/lib/firebase";
 import {
   arrayUnion,
   collection,

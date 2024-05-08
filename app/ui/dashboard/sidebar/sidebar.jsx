@@ -1,4 +1,6 @@
+"use client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import MenuLink from "./menuLink/menuLink";
 import styles from "./sidebar.module.css";
 import {
@@ -14,7 +16,12 @@ import {
   MdLogout,
   MdImportExport,
 } from "react-icons/md";
-import { auth, signOut } from "@/app/auth";
+
+import { fAuth } from "@/app/lib/firebase";
+
+import { signOut } from "firebase/auth";
+
+// import { auth, signOut } from "@/app/auth";
 
 const menuItems = [
   {
@@ -69,20 +76,33 @@ const menuItems = [
   },
 ];
 
-const Sidebar = async () => {
-  const { user } = await auth();
+const Sidebar = () => {
+  // const { user } = auth();
+  // console.log("sidebar", user);
+  const router = useRouter();
+  const handleLogout = () => {
+    signOut(fAuth)
+      .then(() => {
+        // Sign-out successful.
+        router.push("/");
+        console.log("Signed out successfully");
+      })
+      .catch((error) => {
+        // An error happened.
+      });
+  };
   return (
     <div className={styles.container}>
       <div className={styles.user}>
-        <Image
+        {/* <Image
           className={styles.userImage}
           src={user?.img || "/noavatar.png"}
           alt=""
           width="50"
           height="50"
-        />
+        /> */}
         <div className={styles.userDetail}>
-          <span className={styles?.username}>{user?.username}</span>
+          {/* <span className={styles?.username}>{user?.username}</span> */}
           <span className={styles?.userTitle}>Administrator</span>
         </div>
       </div>
@@ -96,17 +116,11 @@ const Sidebar = async () => {
           </li>
         ))}
       </ul>
-      <form
-        action={async () => {
-          "use server";
-          await signOut();
-        }}
-      >
-        <button className={styles.logout}>
-          <MdLogout />
-          Logout
-        </button>
-      </form>
+
+      <button onClick={handleLogout} className={styles.logout}>
+        <MdLogout />
+        Logout
+      </button>
     </div>
   );
 };

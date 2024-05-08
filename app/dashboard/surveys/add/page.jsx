@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { useRouter } from "next/navigation";
 import { addDoc, collection, doc, writeBatch } from "firebase/firestore";
-import db from "@/app/lib/firebase";
+import { db } from "@/app/lib/firebase";
 import { sendPushNotificationToAllUser } from "@/app/lib/sendPushNotification";
 import { Bounce, toast } from "react-toastify";
 
