@@ -5,6 +5,7 @@ import styles from "@/app/ui/dashboard/users/addUser/addUser.module.css";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
 import { useRouter } from "next/navigation";
+import { Bounce, toast } from "react-toastify";
 
 const AddUserPage = () => {
   const router = useRouter();
@@ -36,7 +37,17 @@ const AddUserPage = () => {
 
       await addDoc(collection(db, "users"), userData);
       router.push("/dashboard/users"); // Redirect using Next.js router
-      console.log("User created successfully:", user);
+      toast.success("User created successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
     } catch (err) {
       console.error("Error creating user:", err);
       setError("Failed to create user. Please try again."); // Set error message

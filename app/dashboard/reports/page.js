@@ -81,6 +81,12 @@ const DeviceSurveysPage = () => {
     fetchSurveyResponses();
   }, []);
 
+  console.log(
+    surveyResponses.filter(
+      (response) => response.surveyId === "1UylBfrzbGgPf8Uomaxg"
+    )
+  );
+
   const handleViewResponse = async (response) => {
     // Fetch survey details for the selected response
     const surveyRef = doc(db, "Surveys", response.surveyId);
@@ -282,7 +288,7 @@ const DeviceSurveysPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {surveyResponses.map((response) => (
+              {displayedSurveys.map((response) => (
                 <TableRow
                   key={response.id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

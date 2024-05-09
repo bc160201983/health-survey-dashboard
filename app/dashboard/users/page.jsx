@@ -7,15 +7,15 @@ import Search from "@/app/ui/dashboard/search/search";
 import styles from "@/app/ui/dashboard/users/users.module.css";
 import Image from "next/image";
 import Link from "next/link";
-import { collection, query, getDocs } from "firebase/firestore";
+import { collection, query, getDocs, doc, deleteDoc } from "firebase/firestore";
 import { db } from "@/app/lib/firebase";
+import { deleteUser } from "firebase/auth";
 
-const UsersPage = ({ searchParams }) => {
+const UsersPage = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { q, page } = searchParams || { q: "", page: 1 };
       const usersCollection = collection(db, "users");
       const usersQuery = query(usersCollection);
       const querySnapshot = await getDocs(usersQuery);
@@ -27,7 +27,24 @@ const UsersPage = ({ searchParams }) => {
     };
 
     fetchData();
-  }, [searchParams]);
+  }, []);
+
+  const handleDeleteUser = async (userId) => {
+    console.log(userId);
+    try {
+      // Get a reference to the user document
+      const userRef = doc(db, "users", userId);
+      // Delete the user document
+      await deleteDoc(userRef);
+      await deleteUser(userId);
+      console.log("User deleted successfully");
+
+      // Remove the deleted user from the state
+      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -69,21 +86,18 @@ const UsersPage = ({ searchParams }) => {
               <td>{user.isActive ? "active" : "passive"}</td>
               <td>
                 <div className={styles.buttons}>
-                  <Link href={`/dashboard/users/${user.id}`}>
+                  {/* <Link href={`/dashboard/users/${user.id}`}>
                     <button className={`${styles.button} ${styles.view}`}>
                       View
                     </button>
-                  </Link>
-                  {/* <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      deleteUser(user.id);
-                    }}
+                  </Link> */}
+
+                  <button
+                    onClick={() => handleDeleteUser(user.id)}
+                    className={`${styles.button} ${styles.delete}`}
                   >
-                    <button className={`${styles.button} ${styles.delete}`}>
-                      Delete
-                    </button>
-                  </form> */}
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>

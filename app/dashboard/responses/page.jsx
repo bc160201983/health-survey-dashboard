@@ -88,7 +88,7 @@ const DevicesPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {deviceData.map(({ deviceId, times }) => (
+            {displayedSurveys.map(({ deviceId, times }) => (
               <TableRow key={deviceId}>
                 <TableCell sx={{ color: "white" }}>{deviceId}</TableCell>
                 <TableCell sx={{ color: "white" }}>

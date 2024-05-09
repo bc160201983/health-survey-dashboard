@@ -5,6 +5,7 @@ import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { fAuth } from "@/app/lib/firebase";
 import { useRouter } from "next/navigation";
+import { Bounce, toast } from "react-toastify";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -16,8 +17,19 @@ const LoginForm = () => {
     if (password != "") {
       try {
         const user = await signInWithEmailAndPassword(fAuth, email, password);
-        console.log("Success. The user is created in Firebase");
+
         router.push("/dashboard");
+        toast.success("User LogedIn successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
       } catch (error) {
         setError(error.message);
       }
