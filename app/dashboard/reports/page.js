@@ -261,9 +261,9 @@ const DeviceSurveysPage = () => {
                   "& .MuiSelect-root": { color: "#182237" },
                 }}
               >
-                <MenuItem value="">All</MenuItem>
-                <MenuItem value="pending">Pending</MenuItem>
-                <MenuItem value="completed">Completed</MenuItem>
+                <MenuItem value="completed" defaultValue={"completed"}>
+                  Completed
+                </MenuItem>
               </Select>
             </FormControl>
             <Button
